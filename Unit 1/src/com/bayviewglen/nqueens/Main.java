@@ -23,7 +23,7 @@ public class Main {
 		 */
 		while(!isValidInput) {
 			try {
-				n = Integer.valueOf(in.nextLine());
+				n = Math.abs(Integer.valueOf(in.nextLine()));
 				isValidInput = true;
 			}catch(Exception e) {
 
