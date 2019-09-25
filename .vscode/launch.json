@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Driver",
+            "request": "launch",
+            "mainClass": "com.bayviewglen.queue.Driver",
+            "projectName": "Unit 1"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Main",
+            "request": "launch",
+            "mainClass": "com.bayviewglen.nqueens.Main",
+            "projectName": "Unit 1"
+        }
+    ]
+}

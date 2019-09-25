@@ -55,6 +55,7 @@ public class Main {
 			printBoard();
 		else
 			System.out.println("No possible solutions");
+		in.close();
 	}
 	
 	/*
