@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - TreeDriver",
+            "request": "launch",
+            "mainClass": "com.bayviewglen.ds.TreeDriver",
+            "projectName": "Unit 1"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Driver",
             "request": "launch",
             "mainClass": "com.bayviewglen.queue.Driver",
