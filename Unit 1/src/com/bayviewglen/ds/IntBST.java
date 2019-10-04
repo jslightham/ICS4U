@@ -110,7 +110,7 @@ public class IntBST{
             }
         }
  
-        return root;
+        return node;
     }
 
     public Integer minValue(IntBinaryTreeNode node) {
@@ -119,6 +119,43 @@ public class IntBST{
             return minValue(node.getLeftChild());
         }
         return node.getData();
+    }
+
+    public IntBinaryTreeNode buildTree(){
+        return buildTree(this.root);
+    }
+
+    public IntBinaryTreeNode buildTree(IntBinaryTreeNode root){
+        // Store in array
+        int[] arr = new int[100];
+        storeBSTNodes(root, arr, 0);
+        
+        // build tree with array
+        return buildTreeUtil(arr, 0, arr.length -1);
+    }
+    
+    public void storeBSTNodes(IntBinaryTreeNode root, int[] arr, int index){
+        if(root.hasLeft()){
+            storeBSTNodes(root.getLeftChild(), arr, index);
+        }
+        arr[index++] = root.getData();
+        if(root.hasRight()){
+            storeBSTNodes(root.getRightChild(), arr, index);
+        }
+    }
+    
+    public IntBinaryTreeNode buildTreeUtil(int[] arr, int start, int end){
+        if(start > end){
+            return null;
+        }
+        
+        int mid = (start + end)/2;
+        IntBinaryTreeNode node = new IntBinaryTreeNode(arr[mid]);
+        
+        node.setLeftChild(buildTreeUtil(arr, start, mid -1));
+        node.setRightChild(buildTreeUtil(arr, mid+1, end));
+
+        return node;
     }
     
 }

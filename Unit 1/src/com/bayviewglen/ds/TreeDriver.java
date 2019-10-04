@@ -10,9 +10,10 @@ public class TreeDriver {
         while (in.hasNext()){
             bst.addInteger(in.nextInt());
         }
-        bst.inOrderTraversal();
-        bst.delete(96);
-        bst.inOrderTraversal();
+        bst.preOrderTraversal();
+        bst.buildTree();
+        System.out.println();
+        bst.preOrderTraversal();
         in.close();
     }
 
