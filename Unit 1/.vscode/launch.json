@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DepthFirstPath",
+            "request": "launch",
+            "mainClass": "com.bayviewglen.graph.DepthFirstPath",
+            "projectName": "Unit 1"
+        }
+    ]
+}
