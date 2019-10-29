@@ -1,6 +1,27 @@
 {
     "configurations": [
         {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome",
+            "url": "http://localhost:5500/${relativeFile}",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DepthFirstPath",
+            "request": "launch",
+            "mainClass": "com.bayviewglen.graph.DepthFirstPath",
+            "projectName": "Unit 1"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DepthFirstSearch",
+            "request": "launch",
+            "mainClass": "com.bayviewglen.graph.DepthFirstSearch",
+            "projectName": "Unit 1"
+        },
+        {
             "type": "java",
             "name": "CodeLens (Launch) - LLTestDriver",
             "request": "launch",
