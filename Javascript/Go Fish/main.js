@@ -116,42 +116,51 @@ function main(elem){
 
     // Set up hands and players
     humanPlayer.hand = [];
+    humanPlayer.score = 0;
+    for(var i=0; i<5; i++){
+        humanPlayer.hand[i] = getCard();
+    }
 
     if(numPlayers > 1){
         players[1] = new Player("Player 2");
         players[1].score = 0;
+        for(var i=0; i<5; i++){
+            players[1].hand[i] = getCard();
+        }
     }if(numPlayers > 2){
         players[2] = new Player("Player 3");
         players[2].score = 0;
+        for(var i=0; i<5; i++){
+            players[2].hand[i] = getCard();
+        }
     }if(numPlayers > 3){
         players[3] = new Player("Player 4");
         players[3].score = 0;
+        for(var i=0; i<5; i++){
+            players[3].hand[i] = getCard();
+        }
     }
-    drawGame(ctx, canvas);
+
+    //drawGame(ctx, canvas);
 
     var isGameOver = false;
     while(!isGameOver){
-        checkForPairs(humanPlayer);
+        humanPlayer.score += checkForPairs(humanPlayer);
         for(var i =1; i<players.length; i++){
-            checkForPairs(players[i], 0);
+            players[i].score += checkForPairs(players[i], 0);
         }
-
-
         playerTurn();
-        for(var i = 1; i<players.length; i++){
-            botTurn(players[i]);
-        }
         if(humanPlayer.score >= 10){
             isGameOver = true;
-        }else if(players[1].score >= 10){
-            isGameOver = true;
-        }else if(players[2].score >= 10){
-            isGameOver = true;
-        }else if(players[3].score >= 10){
-            isGameOver = true;
-        }else if(players[4].score >= 10){
-            isGameOver = true;
         }
+        for(var i = 1; i<players.length; i++){
+            botTurn(players[i]);
+            if(players[i].score >= 10){
+                isGameOver = true;
+            }
+        }
+        drawGame(ctx, canvas);
+        isGameOver = true;
     }
 }
 
@@ -173,13 +182,20 @@ function drawGame(ctx, canvas){
 function drawHand(player, ctx){
     if(player == 0){
         for(var i = 0; i<humanPlayer.hand.length; i++){
-            drawCard(1300/2 - (500*humanPlayer.hand.length)/22 + i*50, 500, 6, humanPlayer.hand[i], ctx);
+            drawCard(1300/2 - (500*humanPlayer.hand.length)/18 + i*50, 500, 6, humanPlayer.hand[i], ctx);
+        }
+        for(var i = 0; i<humanPlayer.score; i++){
+            drawCard(1300/2 - (500*humanPlayer.score)/20 + 50*i, 425, 14, "back", ctx);
+            drawCard(1300/2 - (500*humanPlayer.score)/20 + 50*i, 400, 14, "back", ctx);
         }
     }
     if(player == 1){
+        for(var i = 0; i<players[1].hand.length; i++){
+            drawCard(100, 700/2 - (500*players[1].hand.length)/22 + i*50, 14, "backr", ctx);
+        }
         for(var i = 0; i<players[1].score; i++){
-            drawCard(150, 700/2 - (500*players[1].score*2)/40 + i*50, 14, "backr", ctx);
-            drawCard(175, 700/2 - (500*players[1].score*2)/40 + i*50, 14, "backr", ctx);
+            drawCard(175, 700/2 - (500*players[1].score*2)/56 + i*50, 14, "backr", ctx);
+            drawCard(200, 700/2 - (500*players[1].score*2)/56 + i*50, 14, "backr", ctx);
         }
     }
     if(player == 2){
@@ -189,9 +205,12 @@ function drawHand(player, ctx){
         }
     }
     if(player == 3){
+        for(var i = 0; i<players[3].hand.length; i++){
+            drawCard(1150, 700/2 - (500*players[3].hand.length)/22 + i*50, 14, "backr", ctx);
+        }
         for(var i = 0; i<players[3].score; i++){
-            drawCard(1075, 700/2 - (500*players[3].score*2)/40 + i*50, 14, "backr", ctx);
-            drawCard(1100, 700/2 - (500*players[3].score*2)/40 + i*50, 14, "backr", ctx);
+            drawCard(1075, 700/2 - (500*players[3].score*2)/56 + i*50, 14, "backr", ctx);
+            drawCard(1050, 700/2 - (500*players[3].score*2)/56 + i*50, 14, "backr", ctx);
         }
     }
 }
@@ -203,7 +222,7 @@ function drawCard(x, y, scaleFactor, type, ctx){
 }
 
 function checkForPairs(player, score){
-    var hasPair = false;
+    var retScore = 0;
     for(var i=0; i < player.hand.length; i++){
         for(var j=i +1; j < player.hand.length; j++){
             if(player.hand[i] != null && player.hand[j] != null){
@@ -217,9 +236,9 @@ function checkForPairs(player, score){
             }
         }
     }
-    var filtered = array.filter(function (el) { return el != null; });
+    var filtered = player.hand.filter(function (el) { return el != null; });
     player.hand = filtered;
-    return score;
+    return retScore;
 }
 
 function playerTurn(){
@@ -227,7 +246,7 @@ function playerTurn(){
 }
 
 function botTurn(player){
-
+    
 }
 
 class Player{
