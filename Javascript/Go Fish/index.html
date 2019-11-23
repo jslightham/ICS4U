@@ -1,0 +1,52 @@
+<html>
+	<title>
+		Go Fishy
+	</title>
+<head>
+	
+	<script src='main.js'></script>
+
+</head>
+<body onload="loadImages()" style="background-image: url('images/wood back.jpg');">
+<center>
+<canvas id="myCanvas" width="1300" height="700">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+<br>
+<b style="color: #ffffff;">Pick A Card:</b>
+<div id="form">
+<form name="pickCard" id="pickCard" action="#">
+	<select id="player">
+		<option value="CPU 1">CPU 1</option>
+		<option value="CPU 2">CPU 2</option>
+		<option value="CPU 3">CPU 3</option>
+	</select>
+	<select id="card">
+		<option value="A">A</option>
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+		<option value="5">5</option>
+		<option value="6">6</option>
+		<option value="7">7</option>
+		<option value="8">8</option>
+		<option value="9">9</option>
+		<option value="10">10</option>
+		<option value="J">J</option>
+		<option value="Q">Q</option>
+		<option value="K">K</option>
+	</select>
+	<input type="submit" id="submit" value="Ask">
+</form>
+</div>
+</center>
+<form name="play" id="play">
+	<select id="numPlayers">
+		<option value="2">2</option>
+		<option value="3">3</option>
+		<option value="4">4</option>
+	</select>
+	<input id='buttonCreateImage' type='button' value='Play' onclick="main('myCanvas')">
+</form>
+</body>
+</html>
