@@ -3,6 +3,13 @@ var players = [];
 var humanPlayer = {};
 var backgroundImage = new Image();
 var numPlayers = 0;
+var turn = 0;
+var havePlayerValue = false;
+var playerValue = 0;
+var selectedPlayer = 1;
+var canvas;
+var ctx;
+
 function loadImages(){
     for(var i = 2; i<=10; i++){
       var img = new Image();
@@ -106,10 +113,10 @@ function getCard(){
 }
 
 function main(elem){
-    var canvas = document.getElementById(elem);   // used to get the canvas to draw on it
+    canvas = document.getElementById(elem);   // used to get the canvas to draw on it
     var width = canvas.width;         // declares a variable called width and assigns it the width of the canvas
     var height = canvas.height;       // declares a variable called height and assigns it the height of the canvas
-    var ctx = canvas.getContext("2d");
+    ctx = canvas.getContext("2d");
     var num = document.getElementById('numPlayers').options.selectedIndex;
     numPlayers = num + 2;
     //ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
@@ -141,27 +148,7 @@ function main(elem){
         }
     }
 
-    //drawGame(ctx, canvas);
-
-    var isGameOver = false;
-    while(!isGameOver){
-        humanPlayer.score += checkForPairs(humanPlayer);
-        for(var i =1; i<players.length; i++){
-            players[i].score += checkForPairs(players[i], 0);
-        }
-        playerTurn();
-        if(humanPlayer.score >= 10){
-            isGameOver = true;
-        }
-        for(var i = 1; i<players.length; i++){
-            botTurn(players[i]);
-            if(players[i].score >= 10){
-                isGameOver = true;
-            }
-        }
-        drawGame(ctx, canvas);
-        isGameOver = true;
-    }
+    setInterval(game, 250);
 }
 
 function drawGame(ctx, canvas){
@@ -185,8 +172,8 @@ function drawHand(player, ctx){
             drawCard(1300/2 - (500*humanPlayer.hand.length)/18 + i*50, 500, 6, humanPlayer.hand[i], ctx);
         }
         for(var i = 0; i<humanPlayer.score; i++){
-            drawCard(1300/2 - (500*humanPlayer.score)/20 + 50*i, 425, 14, "back", ctx);
-            drawCard(1300/2 - (500*humanPlayer.score)/20 + 50*i, 400, 14, "back", ctx);
+            drawCard(1300/2 - (500*humanPlayer.score)/22 + 50*i, 425, 14, "back", ctx);
+            drawCard(1300/2 - (500*humanPlayer.score)/22 + 50*i, 400, 14, "back", ctx);
         }
     }
     if(player == 1){
@@ -199,9 +186,12 @@ function drawHand(player, ctx){
         }
     }
     if(player == 2){
+        for(var i = 0; i<players[2].hand.length; i++){
+            drawCard(1300/2 - (500*players[2].hand.length)/22 + 50*i, 100, 14, "back", ctx);
+        }
         for(var i = 0; i<players[2].score; i++){
-            drawCard(1300/2 - (500*players[2].score*2)/38 + 50*i, 150, 14, "back", ctx);
-            drawCard(1300/2 - (500*players[2].score*2)/38 + 50*i, 175, 14, "back", ctx);
+            drawCard(1300/2 - (500*players[2].score*2)/56 + 50*i, 175, 14, "back", ctx);
+            drawCard(1300/2 - (500*players[2].score*2)/56 + 50*i, 200, 14, "back", ctx);
         }
     }
     if(player == 3){
@@ -241,12 +231,73 @@ function checkForPairs(player, score){
     return retScore;
 }
 
+function game(){
+    console.log("test");
+    humanPlayer.score += checkForPairs(humanPlayer);
+        for(var i =1; i<players.length; i++){
+            players[i].score += checkForPairs(players[i], 0);
+        }
+
+        if(turn == 0){
+            document.getElementById('card').disabled = false;
+            document.getElementById('player').disabled = false;
+            document.getElementById('submit').disabled = false;
+            if(playerTurn()){
+                havePlayerValue = false;
+                turn++;
+            }
+        }else{
+            document.getElementById('card').disabled = true;
+            document.getElementById('player').disabled = true;
+            document.getElementById('submit').disabled = true;
+            botTurn(turn);
+        }
+
+        if(humanPlayer.score >= 10){
+            isGameOver = true;
+        }
+        for(var i = 1; i<players.length; i++){
+            botTurn(players[i]);
+            if(players[i].score >= 10){
+                isGameOver = true;
+            }
+        }
+        drawGame(ctx, canvas);
+        isGameOver = true;
+        
+}
 function playerTurn(){
-    
+    if(havePlayerValue){
+
+
+
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function botTurn(player){
     
+}
+
+function removeFromHand(player, card){
+    var cardRemoved = false;
+    for(var i = 0; i<player.hand.length; i++){
+        if(player.hand[i].charAt(player.hand[i].length -1) == card.charAt(card.length -1)){
+            player.hand[i] = null;
+            cardRemoved = true;
+            break;
+        }
+    }
+    
+    return cardRemoved;
+}
+
+function setPlayerValue(){
+    playerValue = document.getElementById('card').options.selectedIndex.value;
+    selectedPlayer = document.getElementById('player').options.selectedIndex.value;
+    havePlayerValue = true;
 }
 
 class Player{
