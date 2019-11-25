@@ -58,7 +58,7 @@ function loadImages(){
     cards['spadesJ'] = img;
     var img = new Image();
     img.src ="images/cards/spadesQ.png";
-    cards['spadesQ'] = img;
+    cards['spadesQ'] = img; 
     var img = new Image();
     img.src ="images/cards/spadesK.png";
     cards['spadesK'] = img;
@@ -112,6 +112,19 @@ function getCard(){
    return y + x;
 }
 
+function getSuit(num){
+    var y = Math.floor(Math.random() * 4);
+   if(y == 0){
+       y = "clubs";
+   }else if(y == 1){
+       y = "spades";
+   }else if(y == 2){
+       y = "hearts";
+   }else{
+       y = "diamonds";
+   }
+   return y + num;
+}
 function main(elem){
     canvas = document.getElementById(elem);   // used to get the canvas to draw on it
     var width = canvas.width;         // declares a variable called width and assigns it the width of the canvas
@@ -178,7 +191,7 @@ function drawHand(player, ctx){
     }
     if(player == 1){
         for(var i = 0; i<players[1].hand.length; i++){
-            drawCard(100, 700/2 - (500*players[1].hand.length)/22 + i*50, 14, "backr", ctx);
+            drawCard(100, 700/2 - (500*players[1].hand.length)/22 + i*50, 14, players[1].hand[i], ctx);
         }
         for(var i = 0; i<players[1].score; i++){
             drawCard(175, 700/2 - (500*players[1].score*2)/56 + i*50, 14, "backr", ctx);
@@ -232,7 +245,6 @@ function checkForPairs(player, score){
 }
 
 function game(){
-    console.log("test");
     humanPlayer.score += checkForPairs(humanPlayer);
         for(var i =1; i<players.length; i++){
             players[i].score += checkForPairs(players[i], 0);
@@ -268,9 +280,15 @@ function game(){
 }
 function playerTurn(){
     if(havePlayerValue){
-
-
-
+        if(removeFromHand(players[selectedPlayer], playerValue)){
+            humanPlayer.hand.push(getSuit(playerValue));
+            havePlayerValue = false;
+            alert("You took a card from the player")
+            return false;
+        }else{
+            humanPlayer.hand.push(getCard());
+            alert("You take a card from the pile")
+        }
         return true;
     }else{
         return false;
@@ -278,6 +296,7 @@ function playerTurn(){
 }
 
 function botTurn(player){
+    var obj = players[player];
     
 }
 
@@ -290,14 +309,17 @@ function removeFromHand(player, card){
             break;
         }
     }
-    
+
+    player.hand = player.hand.filter(function (el) { return el != null; });
     return cardRemoved;
 }
 
 function setPlayerValue(){
-    playerValue = document.getElementById('card').options.selectedIndex.value;
-    selectedPlayer = document.getElementById('player').options.selectedIndex.value;
+    var select = document.getElementById('card');
+    playerValue = select.options[select.selectedIndex].value;
+    selectedPlayer = document.getElementById('player').options.selectedIndex + 1;
     havePlayerValue = true;
+    alert("You ask " + selectedPlayer + " for a " + playerValue);
 }
 
 class Player{
