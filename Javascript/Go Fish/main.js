@@ -262,7 +262,9 @@ function game(){
             document.getElementById('card').disabled = true;
             document.getElementById('player').disabled = true;
             document.getElementById('submit').disabled = true;
-            botTurn(turn);
+            if(botTurn(turn)){
+                turn++;
+            }
         }
 
         if(humanPlayer.score >= 10){
@@ -297,7 +299,20 @@ function playerTurn(){
 
 function botTurn(player){
     var obj = players[player];
-    
+    var targetPlayer = player;
+    while(targetPlayer != player && targetPlayer < numPlayers){
+        targetPlayer = Math.floor(Math.random()*numPlayers);
+    }
+    var targetCard = getCard();
+    if(removeFromHand(targetPlayer, targetCard)){
+        player.hand.push(targetCard);
+        alert("Bot took a card from player")
+        return false;
+    }else{
+        player.hand.push(getCard());
+        alert("Bot took a card from pile");
+        return true;
+    }
 }
 
 function removeFromHand(player, card){
@@ -309,7 +324,6 @@ function removeFromHand(player, card){
             break;
         }
     }
-
     player.hand = player.hand.filter(function (el) { return el != null; });
     return cardRemoved;
 }
