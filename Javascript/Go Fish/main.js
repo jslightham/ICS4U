@@ -9,6 +9,15 @@ var playerValue = 0;
 var selectedPlayer = 1;
 var canvas;
 var ctx;
+var displayText = "Welcome to Go Fish! It is your turn!";
+
+function on() {
+    document.getElementById("playButton").style.display = "block";
+}
+
+function off() {
+    document.getElementById("playButton").style.display = "none";
+}
 
 function loadImages(){
     for(var i = 2; i<=10; i++){
@@ -126,6 +135,7 @@ function getSuit(num){
    return y + num;
 }
 function main(elem){
+    off();
     canvas = document.getElementById(elem);   // used to get the canvas to draw on it
     var width = canvas.width;         // declares a variable called width and assigns it the width of the canvas
     var height = canvas.height;       // declares a variable called height and assigns it the height of the canvas
@@ -137,36 +147,41 @@ function main(elem){
     // Set up hands and players
     humanPlayer.hand = [];
     humanPlayer.score = 0;
+    humanPlayer.name = "You";
     for(var i=0; i<5; i++){
         humanPlayer.hand[i] = getCard();
     }
 
     if(numPlayers > 1){
-        players[1] = new Player("Player 2");
+        players[1] = new Player("CPU 1");
         players[1].score = 0;
         for(var i=0; i<5; i++){
             players[1].hand[i] = getCard();
         }
     }if(numPlayers > 2){
-        players[2] = new Player("Player 3");
+        players[2] = new Player("CPU 2");
         players[2].score = 0;
         for(var i=0; i<5; i++){
             players[2].hand[i] = getCard();
         }
     }if(numPlayers > 3){
-        players[3] = new Player("Player 4");
+        players[3] = new Player("CPU 3");
         players[3].score = 0;
         for(var i=0; i<5; i++){
             players[3].hand[i] = getCard();
         }
     }
 
-    setInterval(game, 250);
+    setInterval(game, 2500);
 }
 
 function drawGame(ctx, canvas){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+    ctx.font = "30px Comic Sans MS";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText(displayText, canvas.width/2, canvas.height/2)
 
     if(numPlayers > 1){
         drawHand(0, ctx);
@@ -191,7 +206,7 @@ function drawHand(player, ctx){
     }
     if(player == 1){
         for(var i = 0; i<players[1].hand.length; i++){
-            drawCard(100, 700/2 - (500*players[1].hand.length)/22 + i*50, 14, players[1].hand[i], ctx);
+            drawCard(100, 700/2 - (500*players[1].hand.length)/22 + i*50, 14, "backr", ctx);
         }
         for(var i = 0; i<players[1].score; i++){
             drawCard(175, 700/2 - (500*players[1].score*2)/56 + i*50, 14, "backr", ctx);
@@ -245,51 +260,78 @@ function checkForPairs(player, score){
 }
 
 function game(){
+    if(turn >= numPlayers){
+        turn = 0;
+    }
     humanPlayer.score += checkForPairs(humanPlayer);
         for(var i =1; i<players.length; i++){
             players[i].score += checkForPairs(players[i], 0);
         }
 
         if(turn == 0){
+            if(displayText != "Please select a valid player!"){
+                displayText = "It is your turn!";
+            }
             document.getElementById('card').disabled = false;
             document.getElementById('player').disabled = false;
             document.getElementById('submit').disabled = false;
             if(playerTurn()){
                 havePlayerValue = false;
                 turn++;
+            }else{
+
             }
         }else{
             document.getElementById('card').disabled = true;
             document.getElementById('player').disabled = true;
             document.getElementById('submit').disabled = true;
+            displayText = "It is CPU " + turn + "'s Turn!"
             if(botTurn(turn)){
                 turn++;
             }
         }
 
-        if(humanPlayer.score >= 10){
-            isGameOver = true;
-        }
-        for(var i = 1; i<players.length; i++){
-            botTurn(players[i]);
-            if(players[i].score >= 10){
-                isGameOver = true;
+        if(humanPlayer.hand.length == 0){
+            for(var i=0; i<5; i++){
+                humanPlayer.hand[i] = getCard();
             }
         }
-        drawGame(ctx, canvas);
-        isGameOver = true;
-        
+
+        if(humanPlayer.score >= 10){
+            gameFinish(0);
+        }
+
+        for(var i = 1; i<players.length; i++){
+            if(players[i].score >= 10){
+                gameFinish(i);
+            }
+            if(players[i].hand.length < 1){
+                for(var j=0; j<5; j++){
+                    players[i].hand[j] = getCard();
+                }
+            }
+        }
+        drawGame(ctx, canvas);       
 }
+function gameFinish(player){
+    clearInterval(game);
+    if(player == 0){
+        displayText = "You Win!"
+    }else{
+        displayText = "CPU " + player + " wins!"
+    }
+}
+
 function playerTurn(){
     if(havePlayerValue){
         if(removeFromHand(players[selectedPlayer], playerValue)){
             humanPlayer.hand.push(getSuit(playerValue));
             havePlayerValue = false;
-            alert("You took a card from the player")
+            displayText = "You took a card from " + players[selectedPlayer].name;
             return false;
         }else{
             humanPlayer.hand.push(getCard());
-            alert("You take a card from the pile")
+            displayText = "You take a card from the pile";
         }
         return true;
     }else{
@@ -300,17 +342,37 @@ function playerTurn(){
 function botTurn(player){
     var obj = players[player];
     var targetPlayer = player;
-    while(targetPlayer != player && targetPlayer < numPlayers){
+    while(targetPlayer == player && targetPlayer < numPlayers){
         targetPlayer = Math.floor(Math.random()*numPlayers);
     }
-    var targetCard = getCard();
+    if(targetPlayer == 0){
+        targetPlayer = humanPlayer;
+    }else{
+        targetPlayer = players[targetPlayer];
+    }
+    var hasCard = false;
+    var targetCard;
+    while(!hasCard){
+        targetCard = getCard();
+        targetCard = targetCard.charAt(targetCard.length-1);
+        for(var i=0; i<obj.hand.length; i++){
+            if(targetCard == obj.hand[i].charAt(obj.hand[i].length-1)){
+                hasCard = true;
+            }
+        }
+    }
+    var displayCard = targetCard.charAt(targetCard.length -1);
+    if(displayCard == 0){
+        displayCard = 10;
+    }
+    displayText = "CPU " + player + " asks " + targetPlayer.name + " for a " + displayCard + "! ";
     if(removeFromHand(targetPlayer, targetCard)){
-        player.hand.push(targetCard);
-        alert("Bot took a card from player")
+        obj.hand.push(targetCard);
+        displayText += "Taken.";
         return false;
     }else{
-        player.hand.push(getCard());
-        alert("Bot took a card from pile");
+        obj.hand.push(getCard());
+        displayText += "Go Fish!";
         return true;
     }
 }
@@ -332,8 +394,13 @@ function setPlayerValue(){
     var select = document.getElementById('card');
     playerValue = select.options[select.selectedIndex].value;
     selectedPlayer = document.getElementById('player').options.selectedIndex + 1;
-    havePlayerValue = true;
-    alert("You ask " + selectedPlayer + " for a " + playerValue);
+    if(selectedPlayer < numPlayers){
+        havePlayerValue = true;
+        displayText = "You ask CPU " + selectedPlayer + " for a " + playerValue;
+    }else{
+        displayText = "Please select a valid player!";
+    }
+    
 }
 
 class Player{
@@ -343,4 +410,3 @@ class Player{
         this.score = 0;
     }
 }
-

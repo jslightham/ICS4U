@@ -6,8 +6,64 @@
 	
 	<script src='main.js'></script>
 
+	<style>
+		input[type=text], select {
+			width: 10%;
+			padding: 12px 20px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+		
+		input[type=button] {
+			width: 10%;
+			color: black;
+			padding: 14px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+		#playButton {
+  			position: fixed; /* Sit on top of the page content */
+  			display: block; /* Hidden by default */
+  			width: 100%; /* Full width (cover the whole page) */
+  			height: 100%; /* Full height (cover the whole page) */
+  			top: 0;
+  			left: 0;
+  			right: 0;
+  			bottom: 0;
+  			background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  			z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  			cursor: pointer; /* Add a pointer on hover */
+		}
+
+		#play{
+			margin-left: auto;
+			margin-right: auto;
+			height: 50%;
+			width: 50%;
+			margin-top: 10%;
+			text-align: center;
+			color: white;
+		}
+		body{
+			background-image: url('images/wood back.jpg');
+			font-family: "Comic Sans MS";
+		}
+		</style>
+
 </head>
-<body onload="loadImages()" style="background-image: url('images/wood back.jpg');">
+<body onload="loadImages()">
+	<div id = "playButton">
+		<form name="play" id="play">
+			<h1>Welcome To Go Fish! Select the number of players and click play to begin!</h1>
+			<select id="numPlayers">
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+			</select>
+			<input id='buttonCreateImage' type='button' value='Play' onclick="main('myCanvas')">
+		</form>
+		</div>
 <center>
 <canvas id="myCanvas" width="1300" height="700">
 Your browser does not support the HTML5 canvas tag.
@@ -40,13 +96,6 @@ Your browser does not support the HTML5 canvas tag.
 </form>
 </div>
 </center>
-<form name="play" id="play">
-	<select id="numPlayers">
-		<option value="2">2</option>
-		<option value="3">3</option>
-		<option value="4">4</option>
-	</select>
-	<input id='buttonCreateImage' type='button' value='Play' onclick="main('myCanvas')">
-</form>
+
 </body>
 </html>
